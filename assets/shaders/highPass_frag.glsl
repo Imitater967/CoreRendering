@@ -13,7 +13,7 @@ layout(location = 0) out vec4 outColor;
 void main() {
     vec4 color = texture(tex, v_uv0.xy);
 
-    float relativeLuminance = dot(vec3(0.2126, 0.7152, 0.0722),color.rgb);
-    relativeLuminance = clamp(relativeLuminance-highPassThreshold,0,1);
+    float relativeLuminance = dot(vec3(0.2125, 0.7154, 0.0721), color.rgb);
+    relativeLuminance = clamp(relativeLuminance - highPassThreshold, 0, 1);
     outColor = color * relativeLuminance * highPassIntensity;
 }

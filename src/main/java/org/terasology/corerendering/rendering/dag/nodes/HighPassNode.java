@@ -37,10 +37,10 @@ public class HighPassNode extends ConditionDependentNode {
 
     @SuppressWarnings("FieldCanBeLocal")
     @Range(min = 0.0f, max = 1.0f)
-    private float highPassThreshold = 0.0215f;
+    private float highPassThreshold = 0.02f;
     @SuppressWarnings("FieldCanBeLocal")
-    @Range(min = 0.0f, max = 2.0f)
-    private float highPassIntensity = 1.15f;
+    @Range(min = 0.0f, max = 5.0f)
+    private float highPassIntensity = 0.6f;
 
     private Material highPass;
     private Mesh renderQuad;
