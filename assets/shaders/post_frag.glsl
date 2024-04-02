@@ -30,8 +30,9 @@ uniform mat4 prevViewProjMatrix;
 #endif
 
 #ifdef VIGNETTE
-uniform sampler2D texVignette;
-uniform vec3 tint = vec3(1.0,1.0,1.0);
+uniform float vignetteRadius = 0.8f;
+uniform float vignetteFeather = 0.5f;
+uniform vec3 vignetteTint = vec3(1.0,0.0,0.0);
 #endif
 
 layout(location = 0) out vec4 outColor;
@@ -120,8 +121,13 @@ void main() {
     finalColor.rgb = texture(texColorGradingLut, lutScale * finalColor.rgb + lutOffset).rgb;
 
 #ifdef VIGNETTE
-    float vig = texture(texVignette, v_uv0.xy).x;
-    finalColor.rgb *= vec3(vig, vig, vig) + (1 - vig) * tint.rgb;
+    vec2 newUV = v_uv0.xy * 2 - 1;
+    float circle = length(newUV);
+    float mask = 1 - smoothstep(vignetteRadius, vignetteRadius + vignetteFeather, circle);
+    float invertMask = 1 - mask;
+    vec3 displayColor = finalColor.rgb * mask;
+    vec3 vignetteColor = (finalColor.rgb) * vignetteTint * invertMask;
+    finalColor.rgb = displayColor + vignetteColor;
 #endif
 
     outColor.rgba = finalColor;
