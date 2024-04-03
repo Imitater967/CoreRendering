@@ -72,10 +72,10 @@ public class FinalPostProcessingNode extends AbstractNode implements PropertyCha
 
     @SuppressWarnings("FieldCanBeLocal")
     @Range(min = 0.0f, max = 1.0f)
-    private float vignetteFeather = 0.5f;
+    private float vignetteFeather = 0.7f;
     @SuppressWarnings("FieldCanBeLocal")
     @Range(min = 0.0f, max = 1.0f)
-    private float vignetteRadius = 0.9f;
+    private float vignetteRadius = 0.95f;
     private Vector3f vignetteTint = new Vector3f(.0f, .0f, .0f);
 
     private FBO lastUpdatedGBuffer;
