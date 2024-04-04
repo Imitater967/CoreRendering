@@ -147,9 +147,11 @@ void main() {
 
 
 #ifdef FLICKERING_LIGHT
-    flickeringLightOffset = smoothTriangleWave(timeToTick(time, 0.5)) / 16.0;
-    flickeringLightOffset += smoothTriangleWave(timeToTick(time, 0.25) + 0.3762618) / 8.0;
-    flickeringLightOffset += smoothTriangleWave(timeToTick(time, 0.1) + 0.872917) / 4.0;
+    float frequency = 2.1;
+    float distance = 0.2;
+    flickeringLightOffset = smoothTriangleWave(timeToTick(time, 0.5) + vertexWorldPos.y * - distance * frequency) / 16.0;
+    flickeringLightOffset += smoothTriangleWave(timeToTick(time, 0.25) + vertexWorldPos.x * distance / 2 * frequency) / 8.0;
+    flickeringLightOffset += smoothTriangleWave(timeToTick(time, 0.1)  + vertexWorldPos.z * distance / 4 * frequency) / 4.0;
 #endif
 
 #ifdef ANIMATED_GRASS
