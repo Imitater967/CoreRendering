@@ -170,8 +170,8 @@ public class FinalPostProcessingNode extends AbstractNode implements PropertyCha
 
         if (renderingConfig.isVignette()) {
             postMaterial.setFloat3("vignetteTint", vignetteTint);
-            postMaterial.setFloat("vignetteRadius",vignetteRadius);
-            postMaterial.setFloat("vignetteFeather",vignetteFeather);
+            postMaterial.setFloat("vignetteRadius", vignetteRadius);
+            postMaterial.setFloat("vignetteFeather", vignetteFeather);
         }
 
         this.renderQuad.render();
@@ -195,9 +195,6 @@ public class FinalPostProcessingNode extends AbstractNode implements PropertyCha
                 }
                 break;
             case RenderingConfig.VIGNETTE:
-                if (renderingConfig.isVignette()) {
-                } else {
-                }
                 break;
             case RenderingConfig.BLUR_INTENSITY:
                 if (renderingConfig.getBlurIntensity() != 0) {
