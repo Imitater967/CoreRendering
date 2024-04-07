@@ -70,14 +70,20 @@ public class FinalPostProcessingNode extends AbstractNode implements PropertyCha
     @Range(min = 0.0f, max = 1.0f)
     private float filmGrainIntensity = 0.05f;
 
+    @SuppressWarnings("FieldCanBeLocal")
+    @Range(min = 0.0f, max = 1.0f)
+    private float vignetteFeather = 0.6f;
+    @SuppressWarnings("FieldCanBeLocal")
+    @Range(min = 0.0f, max = 1.0f)
+    private float vignetteRadius = 0.9f;
+    private Vector3f vignetteTint = new Vector3f(.0f, .0f, .0f);
+
     private FBO lastUpdatedGBuffer;
 
     private StateChange setBlurTexture;
     private StateChange setNoiseTexture;
-    private StateChange setVignetteInputTexture;
     private final Mesh renderQuad;
 
-    private final Vector3f tint = new Vector3f(.0f, .0f, .0f);
 
 
     public FinalPostProcessingNode(String nodeUri, Name providingModule, Context context) {
@@ -128,15 +134,9 @@ public class FinalPostProcessingNode extends AbstractNode implements PropertyCha
         // TODO: evaluate the possibility to use GPU-based noise algorithms instead of CPU-generated textures.
         setNoiseTexture = new SetInputTexture2D(texId++, TextureUtil.getTextureUriForWhiteNoise(NOISE_TEXTURE_SIZE,
                 0x1234, 0, 512).toString(), POST_MATERIAL_URN, "texNoise");
-        setVignetteInputTexture = new SetInputTexture2D(texId++, "engine:vignette", POST_MATERIAL_URN, "texVignette");
-
 
         if (renderingConfig.getBlurIntensity() != 0) {
             addDesiredStateChange(setBlurTexture);
-        }
-
-        if (renderingConfig.isVignette()) {
-            addDesiredStateChange(setVignetteInputTexture);
         }
 
         if (renderingConfig.isFilmGrain()) {
@@ -169,7 +169,9 @@ public class FinalPostProcessingNode extends AbstractNode implements PropertyCha
         }
 
         if (renderingConfig.isVignette()) {
-            postMaterial.setFloat3("tint", tint);
+            postMaterial.setFloat3("vignetteTint", vignetteTint);
+            postMaterial.setFloat("vignetteRadius", vignetteRadius);
+            postMaterial.setFloat("vignetteFeather", vignetteFeather);
         }
 
         this.renderQuad.render();
@@ -193,11 +195,6 @@ public class FinalPostProcessingNode extends AbstractNode implements PropertyCha
                 }
                 break;
             case RenderingConfig.VIGNETTE:
-                if (renderingConfig.isVignette()) {
-                    addDesiredStateChange(setVignetteInputTexture);
-                } else {
-                    removeDesiredStateChange(setVignetteInputTexture);
-                }
                 break;
             case RenderingConfig.BLUR_INTENSITY:
                 if (renderingConfig.getBlurIntensity() != 0) {
