@@ -76,4 +76,4 @@ If you wrote a shader, but Terasology doesn't recognize it, you probably forgot 
 ```
 
 2. write 2 shaders `ID_vert.glsl` and `ID_frag.glsl`.
-3. now Terasology will recognized.
+3. now Terasology should recognize your shader.
