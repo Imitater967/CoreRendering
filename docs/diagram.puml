@@ -1,0 +1,91 @@
+//--> for buffer pair
+//--|> for run order
+//--* for fbo
+//progress core rendering module g:220
+@startuml
+
+package Root{
+
+left to right direction
+    map displayResolutionDependentFbo{
+        gBufferPair =>
+    }
+    object shadowMapResolutionDependentFbo
+
+}
+package CleanDepth{
+    map lastUpdatedGBufferClearingNode{
+        input1 => output1
+    }
+    map staleGBufferClearingNode{
+        input1 => output1
+    }
+}
+
+displayResolutionDependentFbo::gBufferPair --> lastUpdatedGBufferClearingNode::input1
+displayResolutionDependentFbo::gBufferPair --> staleGBufferClearingNode::input1
+
+package RenderingSky{
+    map backdropNode{
+        input1 => output1
+    }
+    lastUpdatedGBufferClearingNode::output1 --> backdropNode::input1 : Render the sky box
+}
+
+package RenderingWorld{
+        map opaqueObjectsNode{
+            input1 => output1
+        }
+        map opaqueBlocksNode{
+            input1 => output1
+        }
+        map alphaRejectBlocksNode{
+            input1 => output1
+        }
+        map overlaysNode{
+            input1 => output1
+        }
+        backdropNode::output1 --> opaqueObjectsNode::input1 : Render opaque objects like an mob
+        backdropNode::output1 --> opaqueBlocksNode::input1 : Render the opaque block
+        backdropNode::output1 --> alphaRejectBlocksNode::input1 : Render semi-transparent block
+        backdropNode::output1 --> overlaysNode::input1 : Render highlight, like outline
+}
+
+package DeferredLightning {
+        map deferredPointLightsNode{
+            input1 => output1
+            input2 => output2
+            input3 => output3
+        }
+        map deferredMainLightNode{
+            input1 => output1
+            input2 => output2
+        }
+        map applyDeferredLightingNode{
+            input1 => output1
+            input2 => output2
+        }
+
+        opaqueObjectsNode::output1 --> deferredPointLightsNode::input1 : Receive point light for opaque object
+        opaqueBlocksNode::output1 --o deferredPointLightsNode::input1
+        alphaRejectBlocksNode::output1 --o deferredPointLightsNode::input2
+
+        opaqueBlocksNode::output1 --> deferredMainLightNode::input1 : Receive point light for opaque blocks
+        opaqueObjectsNode::output1 --o deferredMainLightNode::input1
+        alphaRejectBlocksNode::output1 --o deferredMainLightNode::input2 : Alpha blocks is processed after main light
+        deferredPointLightsNode::output1 --o deferredMainLightNode::input3 : Main light is processed after point light
+
+        deferredMainLightNode::output1 --> applyDeferredLightingNode::input1 : Combine lights
+        deferredPointLightsNode::output2 --o applyDeferredLightingNode::input1 : Combine lighting is processed after point light
+
+}
+
+package Outline{
+        map outlineNode{
+            input1 => output1
+        }
+        applyDeferredLightingNode::output1 --> outlineNode::input1 : Process outline
+}
+
+
+@enduml
