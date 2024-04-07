@@ -70,7 +70,7 @@ If you wrote a shader, but Terasology doesn't recognize it, you probably forgot 
 
 ```
 {
-  "shader": "MODUEL:ID",
+  "shader": "MODULE:ID",
   "params": {}
 }
 ```
