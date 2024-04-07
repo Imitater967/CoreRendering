@@ -64,7 +64,7 @@ If you study the code deeply, you'll find that, `setDependencies(Content ctx)` i
 
 ### Unrecongnized Shader
 
-If you wrote a shader, but Terasology doesn't recognize it, you are probablly forget to create a material.
+If you wrote a shader, but Terasology doesn't recognize it, you probably forgot to create a material.
 
 1. create a material called "id.mat".  
 
