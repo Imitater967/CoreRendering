@@ -36,8 +36,11 @@ public class HighPassNode extends ConditionDependentNode {
     private static final ResourceUrn HIGH_PASS_MATERIAL_URN = new ResourceUrn("CoreRendering:highPass");
 
     @SuppressWarnings("FieldCanBeLocal")
+    @Range(min = 0.0f, max = 1.0f)
+    private float highPassThreshold = 0.02f;
+    @SuppressWarnings("FieldCanBeLocal")
     @Range(min = 0.0f, max = 5.0f)
-    private float highPassThreshold = 0.05f;
+    private float highPassIntensity = 0.6f;
 
     private Material highPass;
     private Mesh renderQuad;
@@ -86,6 +89,7 @@ public class HighPassNode extends ConditionDependentNode {
         PerformanceMonitor.startActivity("rendering/" + getUri());
 
         highPass.setFloat("highPassThreshold", highPassThreshold, true);
+        highPass.setFloat("highPassIntensity", highPassIntensity, true);
 
         renderQuad.render();
 
