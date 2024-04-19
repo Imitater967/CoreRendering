@@ -12,11 +12,93 @@ package worldRenderingNodes{
     object opaqueBlockNode
     object alphaRejectNode
     object overlayNode
-    lastUpdatedGBufferClearingNode -> worldRenderingNodes
+    lastUpdatedGBufferClearingNode -down-> worldRenderingNodes
     worldRenderingNodes -> opaqueBlockNode
     worldRenderingNodes -> opaqueObjectNode
     worldRenderingNodes -> alphaRejectNode
     worldRenderingNodes -> overlayNode
 }
+
+diamond worldRenderingNodesB
+opaqueBlockNode -down-> worldRenderingNodesB
+opaqueObjectNode -down-> worldRenderingNodesB
+alphaRejectNode -down-> worldRenderingNodesB
+
+package reflectAndRefractionsNode{
+    object reflectedBufferClearingNode{
+        Buffer Cleaning Node
+    }
+    object reflectBackdropNode
+    object worldReflectionNode
+    object reflectedRefractedBufferClearingNode{
+        Buffer Cleaning Node
+    }
+    object chunksRefractiveReflectiveNode
+
+    reflectedBufferClearingNode -down-> reflectBackdropNode
+    reflectBackdropNode -down-> worldReflectionNode
+    worldReflectionNode -down-> chunksRefractiveReflectiveNode
+    reflectedRefractedBufferClearingNode -down-> chunksRefractiveReflectiveNode
+
+
+}
+
+package skyNodes{
+    object backdropNode
+    object hazeIntermediateNode
+    object hazeFinalNode
+    lastUpdatedGBufferClearingNode -down-> backdropNode
+    backdropNode -down-> hazeIntermediateNode
+    hazeIntermediateNode -down-> hazeFinalNode
+}
+
+package lightningNode{
+    object shadwoMapCleaningNode {
+            Buffer Cleaning Node
+    }
+    object staleGBufferCleaningNode {
+            Buffer Cleaning Node
+    }
+    object applyDeferredLightningNode
+    object shadowMapNode
+    object deferredMainLightNode
+    object deferredPointLightNode
+
+    worldRenderingNodesB -down-> applyDeferredLightningNode
+    worldRenderingNodesB -down-> deferredMainLightNode
+    shadwoMapCleaningNode -down-> shadowMapNode
+    shadowMapNode -down-> deferredMainLightNode
+    staleGBufferCleaningNode -down-> applyDeferredLightningNode
+    deferredPointLightNode -down-> applyDeferredLightningNode
+    deferredMainLightNode -down-> applyDeferredLightningNode
+}
+
+package 3dDecorationNode{
+    object outlineNode
+    object ambientOcclusionNode
+    object blurredAmbientOcclusionNode
+}
+
+worldRenderingNodesB -down-> outlineNode
+worldRenderingNodesB -down-> ambientOcclusionNode
+ambientOcclusionNode -down-> blurredAmbientOcclusionNode
+
+
+applyDeferredLightningNode --> chunksRefractiveReflectiveNode
+applyDeferredLightningNode --> outlineNode
+
+
+package prePostProcessing{
+    object prePostCompositeNode
+    object simpleBlendMaterialsNode
+
+    chunksRefractiveReflectiveNode -down-> prePostCompositeNode
+    hazeFinalNode -down-> prePostCompositeNode
+    applyDeferredLightningNode -down-> prePostCompositeNode
+    outlineNode -down-> prePostCompositeNode
+    blurredAmbientOcclusionNode -down-> prePostCompositeNode
+    prePostCompositeNode -down-> simpleBlendMaterialsNode
+}
+
 
 @enduml
