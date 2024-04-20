@@ -39,21 +39,20 @@ package reflectAndRefractionsNode{
     reflectBackdropNode -down-> worldReflectionNode
     worldReflectionNode -down-> chunksRefractiveReflectiveNode
     reflectedRefractedBufferClearingNode -down-> chunksRefractiveReflectiveNode
-
-
 }
 
 package skyNodes{
     object backdropNode
     object hazeIntermediateNode
     object hazeFinalNode
+
     lastUpdatedGBufferClearingNode -down-> backdropNode
     backdropNode -down-> hazeIntermediateNode
     hazeIntermediateNode -down-> hazeFinalNode
 }
 
 package lightningNode{
-    object shadwoMapCleaningNode {
+    object shadowMapCleaningNode {
             Buffer Cleaning Node
     }
     object staleGBufferCleaningNode {
@@ -66,7 +65,7 @@ package lightningNode{
 
     worldRenderingNodesB -down-> applyDeferredLightningNode
     worldRenderingNodesB -down-> deferredMainLightNode
-    shadwoMapCleaningNode -down-> shadowMapNode
+    shadowMapCleaningNode -down-> shadowMapNode
     shadowMapNode -down-> deferredMainLightNode
     staleGBufferCleaningNode -down-> applyDeferredLightningNode
     deferredPointLightNode -down-> applyDeferredLightningNode
@@ -77,16 +76,13 @@ package 3dDecorationNode{
     object outlineNode
     object ambientOcclusionNode
     object blurredAmbientOcclusionNode
+
+    worldRenderingNodesB -down-> outlineNode
+    worldRenderingNodesB -down-> ambientOcclusionNode
+    ambientOcclusionNode -down-> blurredAmbientOcclusionNode
+    applyDeferredLightningNode --> chunksRefractiveReflectiveNode
+    applyDeferredLightningNode --> outlineNode
 }
-
-worldRenderingNodesB -down-> outlineNode
-worldRenderingNodesB -down-> ambientOcclusionNode
-ambientOcclusionNode -down-> blurredAmbientOcclusionNode
-
-
-applyDeferredLightningNode --> chunksRefractiveReflectiveNode
-applyDeferredLightningNode --> outlineNode
-
 
 package prePostProcessing{
     object prePostCompositeNode
@@ -98,7 +94,77 @@ package prePostProcessing{
     outlineNode -down-> prePostCompositeNode
     blurredAmbientOcclusionNode -down-> prePostCompositeNode
     prePostCompositeNode -down-> simpleBlendMaterialsNode
+    overlayNode -down-> prePostCompositeNode
 }
 
+package bloomNodes{
+    object highPassNode
+    object halfScaleBlurredBloomNode
+    object quarterScaledBlurredBloomNode
+    object one8thScaleBlurredBloomNode
+
+    highPassNode -down-> halfScaleBlurredBloomNode
+    halfScaleBlurredBloomNode -down-> quarterScaledBlurredBloomNode
+    quarterScaledBlurredBloomNode -down-> one8thScaleBlurredBloomNode
+    simpleBlendMaterialsNode -down-> highPassNode
+}
+
+package exposureNodes{
+    object exposureDownSamplerTo16pixels
+    object exposureDownSamplerTo8pixels
+    object exposureDownSamplerTo4pixels
+    object exposureDownSamplerTo2pixels
+    object exposureDownSamplerTo1pixels
+    object updateExposureNode
+
+    exposureDownSamplerTo16pixels -down-> exposureDownSamplerTo8pixels
+    exposureDownSamplerTo8pixels -down-> exposureDownSamplerTo4pixels
+    exposureDownSamplerTo4pixels -down-> exposureDownSamplerTo2pixels
+    exposureDownSamplerTo2pixels -down-> exposureDownSamplerTo1pixels
+    exposureDownSamplerTo1pixels -down-> updateExposureNode
+    simpleBlendMaterialsNode -down-> exposureDownSamplerTo16pixels
+}
+
+package initialPostProcessing{
+    object lightShaftsNode
+    object initialPostProcessingNode
+
+    simpleBlendMaterialsNode -down-> lightShaftsNode
+    one8thScaleBlurredBloomNode -down-> initialPostProcessingNode
+    lightShaftsNode -down-> initialPostProcessingNode
+}
+
+package finalPostProcessing{
+    object toneMappingNode
+    object firstLateBlurNode
+    object secondLateBlurNode
+    object finalPostProcessingNode
+    object Screenshot{
+        OutPut Node
+    }
+
+    updateExposureNode -down-> toneMappingNode
+    initialPostProcessingNode -down-> toneMappingNode
+    toneMappingNode -down-> firstLateBlurNode
+    firstLateBlurNode -down-> secondLateBlurNode
+    secondLateBlurNode -down-> finalPostProcessingNode
+    finalPostProcessingNode -> Screenshot
+}
+
+package outputNodes{
+    object outputToScreenNode
+    object Screen{
+        OutPut Node
+    }
+    object outputToVRFrameBufferNode
+    object HMD{
+        OutPut Node
+    }
+
+    finalPostProcessingNode -down-> outputToScreenNode
+    outputToScreenNode -down-> Screen
+    finalPostProcessingNode -down-> outputToVRFrameBufferNode
+    outputToVRFrameBufferNode --> HMD
+}
 
 @enduml
