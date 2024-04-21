@@ -51,7 +51,7 @@ package skyNodes{
     hazeIntermediateNode -down-> hazeFinalNode
 }
 
-package lightningNode{
+package lightningNodes{
     object shadowMapCleaningNode {
             Buffer Cleaning Node
     }
