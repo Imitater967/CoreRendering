@@ -140,7 +140,7 @@ package finalPostProcessing{
     object secondLateBlurNode
     object finalPostProcessingNode
     object Screenshot{
-        OutPut Node
+        Output Node
     }
 
     updateExposureNode -down-> toneMappingNode
