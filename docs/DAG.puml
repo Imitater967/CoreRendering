@@ -24,7 +24,7 @@ opaqueBlockNode -down-> worldRenderingNodesB
 opaqueObjectNode -down-> worldRenderingNodesB
 alphaRejectNode -down-> worldRenderingNodesB
 
-package reflectAndRefractionsNode{
+package reflectionAndRefractionsNodes{
     object reflectedBufferClearingNode{
         Buffer Cleaning Node
     }
