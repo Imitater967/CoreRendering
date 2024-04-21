@@ -72,7 +72,7 @@ package lightningNodes{
     deferredMainLightNode -down-> applyDeferredLightningNode
 }
 
-package 3dDecorationNode{
+package 3dDecorationNodes{
     object outlineNode
     object ambientOcclusionNode
     object blurredAmbientOcclusionNode
