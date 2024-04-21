@@ -158,7 +158,7 @@ package outputNodes{
     }
     object outputToVRFrameBufferNode
     object HMD{
-        OutPut Node
+        Output Node
     }
 
     finalPostProcessingNode -down-> outputToScreenNode
